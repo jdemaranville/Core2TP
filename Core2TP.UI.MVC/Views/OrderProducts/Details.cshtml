@@ -1,14 +1,12 @@
 ﻿@model Core2TP.DATA.EF.Models.OrderProduct
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Product.ProductName + " details on order #" + Model.OrderId;
 }
 
-<h1>Details</h1>
+<h1>@ViewData["Title"]</h1>
 
 <div>
-    <h4>OrderProduct</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Quantity)
