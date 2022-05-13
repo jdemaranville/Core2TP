@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using Core2TP.DATA.EF.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -97,6 +98,33 @@ namespace Core2TP.UI.MVC.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
+            #region Custom User Registration - Properties
+            //Adding these properties to the model that is bound to the Register view.
+            //Then, add the HTML controls into the Register form
+            //Then, back here to update code-behind
+            [Required]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+            
+            [StringLength(150, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+            [Display(Name = "Street Address")]
+            public string Address { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public string Zip { get; set; }
+            public string Phone { get; set; }
+            #endregion
+
+
+
         }
 
 
@@ -123,6 +151,28 @@ namespace Core2TP.UI.MVC.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
+
+                    #region Custom User Registration - Create UserDetail record
+                    gadgetstoreContext ctx = new gadgetstoreContext();
+                    UserDetail userDetail = new UserDetail()
+                    {
+                        UserId = userId,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        Address = Input.Address,
+                        City = Input.City,
+                        State = Input.State,
+                        Zip = Input.Zip,
+                        Phone = Input.Phone,
+                    };
+                    ctx.UserDetails.Add(userDetail);
+                    ctx.SaveChanges();
+                    #endregion
+
+
+
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

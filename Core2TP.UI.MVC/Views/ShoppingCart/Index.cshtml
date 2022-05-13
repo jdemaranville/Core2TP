@@ -1,0 +1,109 @@
+﻿@model Dictionary<int, Core2TP.UI.MVC.Models.CartItemViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Shopping Cart";
+
+    decimal? cartTotal = 0;
+    int totalCountOfItems = 0;
+}
+
+
+<section class="product_section gray-section pb-4 pt-4 mb-4">
+    <div class="heading_container heading_center">
+        <h2>
+            Your <span>Cart</span>
+        </h2>
+    </div>
+</section>
+
+
+<p class="text-center">
+    @Html.ActionLink("Back to Shopping", "Index", "Products", null, new {@class = "btn btn-info"})
+</p>
+@if (Model.Count == 0)
+{
+    <p class="alert alert-warning text-center">
+        @ViewBag.Message
+    </p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            //When calling on an item in a dictionary, you have to specify KEY or VALUE.
+            <tr>
+                <td>
+                    <img src="~/images/t_@item.Value.Product.ProductImage" alt="Product Image"
+                 title="@item.Value.Product.ProductName" />
+                </td>
+
+                <td>
+                    @*V1 - just show the quantity
+                        @Html.DisplayFor(modelItem => item.Value.Qty)*@
+
+                    @*V2 - provide a space for them to see but also be able to update the quantity*@
+                    <form asp-action="UpdateCart" method="post">
+                        <input type="hidden" name="productId" value="@item.Value.Product.ProductId" />
+                        <input type="number" name="qty" value="@item.Value.Qty" class="form-control" style="max-width: 100px; display: inline;" />
+                        <input type="submit" value="Update Cart" class="btn btn-primary" />
+                    </form>
+
+                    @{
+                        //calculate the runningtotal number of items in the car
+                        totalCountOfItems += item.Value.Qty;
+                    }
+                </td>
+                <td>@item.Value.Product.ProductName</td>
+                <td>@string.Format($"{item.Value.Product.ProductPrice:c}")</td>
+                <td>
+                    @*Calculate LineTotal & update running total variable for each row.
+                        Show Line Item Total*@
+                    @{
+                        decimal? lineTotal = item.Value.Product.ProductPrice * item.Value.Qty;
+                        cartTotal += lineTotal;
+                    }
+
+                    @string.Format($"{lineTotal:c}")
+                </td>
+                <td>
+                    @*Remove from cart button*@
+                    @Html.ActionLink("Remove from Cart", "RemoveFromCart", new { id = item.Key }, new {@class = "btn btn-danger"})
+
+
+                    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="alert alert-success text-center" style="font-size: 1.25em">
+        <p>You have @totalCountOfItems item@(totalCountOfItems == 1 ? "" : "s") in your cart.
+        Your total before taxes and shipping is @string.Format($"{cartTotal:c}").</p>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p>@Html.ActionLink("Submit Order", "SubmitOrder", "ShoppingCart", null, new { @class = "btn btn-primary mt-3"})</p>
+        }
+        else
+        {
+            <p>To submit order, please log in.</p>
+            <button disabled="disabled" class="btn btn-primary mt-3">Submit Order</button>
+        }
+    </div>
+
+}
+

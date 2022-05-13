@@ -1,0 +1,121 @@
+﻿@*
+    STEP 7
+*@
+@*@model IEnumerable<Core2TP.DATA.EF.Models.Product>*@
+@model IPagedList<Core2TP.DATA.EF.Models.Product>
+@using X.PagedList.Mvc.Core
+@using X.PagedList;
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<section class="product_section layout_padding gray-section pb-4 pt-4">
+    <div class="heading_container heading_center">
+        <h2>Our <span>Products</span></h2>
+        @if (User.IsInRole("Admin"))
+        {
+            <p>
+                <a asp-action="Create">Add New Gadget</a>
+            </p>
+        }
+        <p>
+            <a asp-action="Index">View Products Table</a>
+        </p>
+    </div>
+</section>
+
+<section class="product_section layout_padding gray-section pb-4 pt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-3">
+                @*
+                    STEP 1
+                    - <form>
+                    - <input> (textbox)
+                    - <input> (submit)
+                *@
+                <form asp-action="TiledProducts" asp-controller="Products" method="get">
+
+                    @*
+                        STEP 4
+                        - <select>
+                    *@
+                    <div class="form-floating mb-4">
+                        <label for="categoryId" class="control-label d-block text-center">Filter by Category</label>
+                        <select name="categoryId" class="form-control text-center" asp-items="ViewBag.CategoryId">
+                            <option value="0">[Choose a Category]</option>
+                        </select>
+                    </div>
+                    <div class="form-floating">
+                        <label class="control-label d-block text-center">Search Gadgets</label>
+                        @if (ViewBag.SearchTerm != null)
+                        {
+                            <input name="searchTerm" class="form-control" value="@ViewBag.SearchTerm" />
+
+                        }
+                        else
+                        {
+                            <input name="searchTerm" class="form-control" />
+                        }
+                        <input type="submit" value="Apply Filters" class="btn btn-primary btn-lg text-center w-50 d-block" />
+                    </div>
+                </form>
+                @if (ViewBag.SearchTerm != null)
+                {
+                    <p class="mt-5 p-2 alert-warning text-center">
+                        Showing results for '@ViewBag.SearchTerm'...
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="product_section">
+    <div class="container">
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-4">
+                    <div class="box">
+                        <div class="option_container">
+                            <div class="options">
+                                <a asp-action="Details" asp-route-id="@product.ProductId" class="btn option1">
+                                    Read More
+                                </a>
+                                <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post">
+                                    <input type="hidden" name="productId" value="@product.ProductId" />
+                                    <input type="hidden" name="qty" value="1" />
+                                    <input type="submit" value="Add to Cart" class="btn option2" />
+                                </form>
+                            </div>
+                        </div>
+                        <div class="img-box">
+                            <img src="~/images/@product.ProductImage" alt="@product.ProductName image" />
+                        </div>
+                        <div class="detail-box">
+                            <div>
+                                <h5>@product.ProductName</h5>
+                            </div>
+                            <div>
+                                <h6>
+                                    @String.Format($"{product.ProductPrice:c}")
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @*
+            STEP 11
+        *@
+        <div class="row mt-5">
+            <div class="col-sm-6">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                @Html.PagedListPager(Model, page => Url.Action("TiledProducts", new {page, searchTerm = ViewBag.SearchTerm, categoryId = ViewBag.Category}))
+            </div>
+        </div>
+    </div>
+</section>

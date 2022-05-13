@@ -4,59 +4,79 @@
     ViewData["Title"] = "Modify " + Model.ProductName;
 }
 
-<h1>@ViewData["Title"]</h1>
+<section class="gray-section mb-4 pb-4 pt-4">
+    <div class="row">
+        <div class="col-md-6 offset-3 pt-4 pb-4 pl-3">
+            <h1 class="text-center">@ViewData["Title"]</h1>
+        </div>
+    </div>
+</section>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+@*
+    EDIT File Upload Steps
+    1) Edit View
+        - Add <input type="hidden" asp-for="[propname]" /> for the class's image property
+        - Add enctype="multipart/form-data" to the <form>
+        - Comment out <input type="text"...> for original image property
+        - Replace with <input type="file" asp-for="[IFormFile prop name]" />
+    2) Add code to handle file upload in Controller
+        - BIND the IFormFile prop in the method signature
+        - Add logic to process the file upload and save the file name to the DB (slightly different in this edit than in create)
+*@
+
+<div class="row mb-3">
+    <div class="col-md-6 offset-3">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ProductId" />
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
+            <input type="hidden" asp-for="ProductImage" />
+            <div class="form-floating">
+                <label asp-for="ProductName" class="control-label d-block text-center"></label>
                 <input asp-for="ProductName" class="form-control" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
+                <span asp-validation-for="ProductName" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ProductPrice" class="control-label"></label>
+            <div class="form-floating">
+                <label asp-for="ProductPrice" class="control-label d-block text-center"></label>
                 <input asp-for="ProductPrice" class="form-control" />
-                <span asp-validation-for="ProductPrice" class="text-danger"></span>
+                <span asp-validation-for="ProductPrice" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ProductDescription" class="control-label"></label>
+            <div class="form-floating">
+                <label asp-for="ProductDescription" class="control-label d-block text-center"></label>
                 <input asp-for="ProductDescription" class="form-control" />
-                <span asp-validation-for="ProductDescription" class="text-danger"></span>
+                <span asp-validation-for="ProductDescription" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UnitsInStock" class="control-label"></label>
+            <div class="form-floating">
+                <label asp-for="UnitsInStock" class="control-label d-block text-center"></label>
                 <input asp-for="UnitsInStock" class="form-control" />
-                <span asp-validation-for="UnitsInStock" class="text-danger"></span>
+                <span asp-validation-for="UnitsInStock" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UnitsOnOrder" class="control-label"></label>
+            <div class="form-floating">
+                <label asp-for="UnitsOnOrder" class="control-label d-block text-center"></label>
                 <input asp-for="UnitsOnOrder" class="form-control" />
-                <span asp-validation-for="UnitsOnOrder" class="text-danger"></span>
+                <span asp-validation-for="UnitsOnOrder" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
+            <div class="form-floating form-check mb-3">
+                <label class="form-check-label d-block text-center">
                     <input class="form-check-input" asp-for="IsDiscontinued" /> @Html.DisplayNameFor(model => model.IsDiscontinued)
                 </label>
             </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
+            <div class="form-floating">
+                <label asp-for="CategoryId" class="control-label d-block text-center"></label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                <span asp-validation-for="CategoryId" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SupplierId" class="control-label"></label>
+            <div class="form-floating">
+                <label asp-for="SupplierId" class="control-label d-block text-center"></label>
                 <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
-                <span asp-validation-for="SupplierId" class="text-danger"></span>
+                <span asp-validation-for="SupplierId" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ProductImage" class="control-label"></label>
-                <input asp-for="ProductImage" class="form-control" />
-                <span asp-validation-for="ProductImage" class="text-danger"></span>
+            <div class="form-floating">
+                <label asp-for="ProductImage" class="control-label d-block text-center"></label>
+                @*<input asp-for="ProductImage" class="form-control" />*@
+                <input type="file" asp-for="Image" class="form-control" accept="image/*" />
+                <span asp-validation-for="ProductImage" class="text-danger text-center mb-3"></span>
             </div>
-            <div class="form-group">
+            <div class="form-floating">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Email Confirmation";
+}
+@model Core2TP.UI.MVC.Models.ContactViewModel
+<section class="product_section gray-section pb-4 pt-4 mb-4">
+    <div class="heading_container heading_center">
+        <h2>
+            Thank <span>You!</span>
+        </h2>
+    </div>
+</section>
+
+<div class="row mb-3">
+    <div class="col-md-6 offset-3">
+        <p class="text-success">
+            We have received your message, @Model.Name!  Details of your message are below.
+        </p>
+        
+        <dl>
+            <dt>Name</dt>
+            <dd>@Model.Name</dd>
+            <dt>Email</dt>
+            <dd>@Model.Email</dd>
+            <dt>Subject</dt>
+            <dd>@Model.Subject</dd>
+            <dt>Message</dt>
+            <dd><cite>@Model.Message</cite></dd>
+        </dl>
+    </div>
+</div>

@@ -22,6 +22,16 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddRoleManager<RoleManager<IdentityRole>>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+
+//Shopping Cart - after this, add app.UseSession() below
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);//session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +50,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+//ADDED FOR SHOPPING CART
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -4,70 +4,87 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete @Model.ProductName?</h1>
+
+
+@if (ViewBag.DeleteMessage != null)
+{
+    <h1>@ViewBag.DeleteMessage</h1>
+}
+else
+{
+    <h1>Delete @Model.ProductName?</h1>
+
+}
 
 <h3 class="text-danger">This action cannot be undone.</h3>
 <div>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProductName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ProductName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProductPrice)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ProductPrice)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProductDescription)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ProductDescription)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UnitsInStock)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UnitsInStock)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UnitsOnOrder)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UnitsOnOrder)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsDiscontinued)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsDiscontinued)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProductImage)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ProductImage)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Category)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Category.CategoryName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Supplier)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Supplier.Address)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ProductId" />
-        <input type="submit" value="Delete Forever" class="btn btn-danger" /> |
+    @if (ViewBag.DeleteMessage == null)
+    {
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="ProductId" />
+            <input type="submit" value="Delete Forever" class="btn btn-danger" /> |
+            <a asp-action="Index">Cancel</a>
+        </form>
+    }
+    else
+    {
         <a asp-action="Index">Cancel</a>
-    </form>
+    }
+
 </div>

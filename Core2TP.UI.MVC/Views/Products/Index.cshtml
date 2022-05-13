@@ -6,82 +6,131 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Add New Gadget</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitsInStock)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitsOnOrder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDiscontinued)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Supplier)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<section class="product_section layout_padding gray-section pb-4 pt-4">
+    <div class="heading_container heading_center">
+        <h2>Our <span>Products</span></h2>
+        @if (User.IsInRole("Admin"))
         {
-            <tr>
-                <td>
-                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">
-                        @Html.DisplayFor(modelItem => item.ProductName)
-                    </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductDescription)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UnitsInStock)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UnitsOnOrder)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsDiscontinued)
-                </td>
-                <td>
-                    @*@Html.DisplayFor(modelItem => item.ProductImage)*@
-                    <img src="/images/@item.ProductImage" alt="@item.ProductDescription" class="img-fluid" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                    @*<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |*@
-                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-                </td>
-            </tr>
+            <p>
+                <a asp-action="Create">Add New Gadget</a>
+            </p>
         }
-    </tbody>
-</table>
+        <p>
+            <a asp-action="TiledProducts">View Product Tiles</a>
+        </p>
+    </div>
+</section>
+
+<section class="product_section">
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductPrice)
+                    </th>
+                    @*                    <th>
+                        @Html.DisplayNameFor(model => model.ProductDescription)
+                        </th>
+                        <th>
+                        @Html.DisplayNameFor(model => model.UnitsInStock)
+                        </th>
+                        <th>
+                        @Html.DisplayNameFor(model => model.UnitsOnOrder)
+                        </th>
+                        <th>
+                        @Html.DisplayNameFor(model => model.IsDiscontinued)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductImage)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Category)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Supplier)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </a>
+                        </td>
+                        <td>
+                            @*@Html.DisplayFor(modelItem => item.ProductPrice)*@
+                            @String.Format($"{item.ProductPrice:c}")
+                        </td>
+                        @*<td>
+                            @Html.DisplayFor(modelItem => item.ProductDescription)
+                            </td>
+                            <td>
+                            @Html.DisplayFor(modelItem => item.UnitsInStock)
+                            </td>
+                            <td>
+                            @Html.DisplayFor(modelItem => item.UnitsOnOrder)
+                            </td>
+                            <td>
+                            @Html.DisplayFor(modelItem => item.IsDiscontinued)
+                            </td>*@
+                        <td>
+                            @*@Html.DisplayFor(modelItem => item.ProductImage)*@
+                            <img src="/images/t_@item.ProductImage" alt="@item.ProductDescription" class="img-fluid" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
+                        </td>
+                        <td>
+
+                            @*
+                                Hide delete button if product is tied to any orders
+                                - strategy: use the id of the current product - search for orderproducts with that same productid
+                                - if no record exists, the product may be deleted
+                            *@
+
+                            <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                            @*<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |*@
+
+                            @{
+                                //Razor block
+                                bool hasRelatedRecords = false;
+                                if (item.OrderProducts.Count() > 0)
+                                {
+                                    hasRelatedRecords = true;
+                                }
+                            }
+                            @if (item.OrderProducts.Count() == 0)
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                            }
+                            else
+                            {
+                                <a disabled="true" class="text-danger" style="text-decoration: line-through" title="Can't delete - referenced by other records.">Delete</a>
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@section Scripts{
+<script>
+            $(document).ready( function () {
+        $('.table').DataTable();
+    } );
+</script>
+}

@@ -22,7 +22,7 @@ namespace Core2TP.DATA.EF.Models
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
         public virtual DbSet<UserDetail> UserDetails { get; set; } = null!;
-        public virtual DbSet<VwGadgetsOverview> VwGadgetsOverviews { get; set; } = null!;
+        public virtual DbSet<VwGadgetsOverview> VwGadgetsOverviews { get; set; } = null!;        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
